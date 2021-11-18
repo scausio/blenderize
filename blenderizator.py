@@ -32,11 +32,12 @@ def sortEdges(edges):
 
 
 class BlenderGrid():
-    def __init__(self, name, file_path, dataType, bathyCoeff=1):
+    def __init__(self, name, file_path, dataType, bathyCoeff=1, fillValue=False):
         self.name=name
         self.file_path=file_path
         self.outPath = outPath = os.path.dirname(file_path)
         self.dataType=dataType
+        self.fv=fillValue
         box=[[ -90,90],[ -180,180]]
         print (outPath)
         if not os.path.exists(outPath):
@@ -65,7 +66,9 @@ class BlenderGrid():
             l = []
 
         elif dataType=='nc_regular':
-            self.grid = NcBathy_regular(file_path, bathyCoeff)
+
+            self.grid = NcBathy_regular(file_path, bathyCoeff,self.fv)
+
             v, t = self.grid.toNumpy(os.path.join(outPath, 'box.npz'))
             l = []
 

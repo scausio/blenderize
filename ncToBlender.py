@@ -47,10 +47,10 @@ class NcBathy_unstruct():
 
 
 class NcBathy_regular():
-    def __init__(self, filePath,bathyCoeff):
+    def __init__(self, filePath,bathyCoeff,fillValue):
         self.path = filePath
         self.bathyCoeff=bathyCoeff
-        #self.fv=fillValue
+        self.fv=fillValue
         self.regularToScatter()
     def readFile(self):
         ds = nc.Dataset(self.path)
@@ -62,10 +62,9 @@ class NcBathy_regular():
         lat = ds[latName][:].filled()
         depth = ds[depthName][:].filled()
         self.nan=np.isnan(depth).flatten()
-        #
-        #depth[np.isnan(depth)] = 0
-        # should be added fillvalue for masking land
-        #depth[depth==self.fv]=np.nan
+
+        if self.fv:
+            depth[depth==self.fv]=np.nan
         self.ds=ds
         return lon,lat,depth
 

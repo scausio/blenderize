@@ -13,7 +13,7 @@ class Writer:
         bpy.ops.object.mode_set(mode='OBJECT')
         self.m = bpy.context.object.data
         self.mesh = np.array([i.co for i in self.m.vertices])
-
+        self.fv=fillValue
     def writeGrd_bathy(self):
 
         self.grid_obj.grid.triangulateElems()
@@ -57,8 +57,7 @@ class Writer:
 
 
     def writeNC(self):
-        x = self.mesh[:, 0]
-        y = self.mesh[:, 1]
+
         z = self.mesh[:, -1]
 
         ds = xr.open_dataset(self.grid_obj.file_path)
@@ -68,8 +67,8 @@ class Writer:
         z = z.reshape(ds[depth].values.shape )
 
         # also here fillvalue should be included
-        # z[np.isnan(z)]=-10
-        #z[np.isnan(z)] = 0
+        if self.grid_obj.fv:
+            z[np.isnan(z)]=self.grid_obj.fv
         ds[depth].values = z
         ds.to_netcdf(os.path.join(os.path.dirname(self.grid_obj.file_path),'%s.nc'%self.grid_obj.name))
 
