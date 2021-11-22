@@ -1,3 +1,5 @@
+import numpy as np
+
 class GmeshMSH():
     def __init__(self, grdPath):
         self.path = grdPath
